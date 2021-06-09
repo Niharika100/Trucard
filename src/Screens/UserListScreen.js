@@ -15,26 +15,33 @@ import Sheet from '../Components/Sheet/Sheet';
 import store from '../Store';
 
 const UserListScreen = () => {
+  // filteredDataSource is the reference to the masterDataSource. filteredDataSource will be used to represent the list so as to use it for the searchBox too.
+  // masterDataSource will be used to compare the text in the searchBox with the userList elements
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
+  // user variable is used to store single user data to show in modal
   const [user, setUser] = useState({});
   const [searchValue, setSearchValue] = useState("");
   const [showFullSheet, setShowFullSheet] = useState(false);
 
   useEffect(() => {
+    // latest data will be fetched from the redux store and updated in filteredDataSource and masterDataSource
     let value = store.getState();
     value = value?._W.users.data;
     setFilteredDataSource(value);
     setMasterDataSource(value);
   }, [])
 
+  // function to perform search operation
   const searchFilterFunction = (text) => {
+    // check if there is any text in the searchBox
     if (text) {
       const newData = masterDataSource.filter(function (item) {
         const itemData = `${item.first_name} ${item.last_name}`
           ? `${item.first_name} ${item.last_name}`.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
+        // return the items for every matching letter
         return itemData.indexOf(textData) > -1;
       });
       setFilteredDataSource(newData);
@@ -86,6 +93,7 @@ const UserListScreen = () => {
         }
         }
       />
+      // modal to show a single user detail when clicked on the list item
       <Sheet
         modalVisible={showFullSheet}
         data={user}
